@@ -1,6 +1,3 @@
-# 数据库初始化
-# @author <a href="https://github.com/liyupi">程序员鱼皮</a>
-# @from <a href="https://yupi.icu">编程导航知识星球</a>
 
 -- 创建库
 create database if not exists noj;
@@ -65,3 +62,64 @@ create table if not exists post_favour
     index idx_postId (postId),
     index idx_userId (userId)
 ) comment '帖子收藏';
+
+-- 题目表
+create table if not exists question
+(
+    id         bigint auto_increment comment 'id' primary key,
+    title      varchar(512)                       null comment '标题',
+    content    text                               null comment '内容',
+    tags       varchar(1024)                      null comment '标签列表（json 数组）',
+    answer     text                               null comment '题目答案',
+    submitNum  int  default 0 not null comment '题目提交数',
+    acceptedNum  int  default 0 not null comment '题目通过数',
+    judgeCase text null comment '判题用例（json 数组）',
+    judgeConfig text null comment '判题配置（json 对象）',
+    thumbNum   int      default 0                 not null comment '点赞数',
+    favourNum  int      default 0                 not null comment '收藏数',
+    userId     bigint                             not null comment '创建用户 id',
+    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete   tinyint  default 0                 not null comment '是否删除',
+    index idx_userId (userId)
+) comment '题目' collate = utf8mb4_unicode_ci;
+
+
+
+# 判题信息（判题过程中得到的一些信息，比如程序的失败原因、程序执行消耗的时间、空间）：
+# judgeInfo（json 对象）
+# {
+#   "message": "程序执行信息",
+#   "time": 1000, // 单位为 ms
+#   "memory": 1000, // 单位为 kb
+# }
+
+# 判题信息枚举值：
+# Accepted 成功
+# Wrong Answer 答案错误
+# Compile Error 编译错误
+# Memory Limit Exceeded 内存溢出
+# Time Limit Exceeded 超时
+# Presentation Error 展示错误
+# Output Limit Exceeded 输出溢出
+# Waiting 等待中
+# Dangerous Operation 危险操作
+# Runtime Error 运行错误（用户程序的问题）
+# System Error 系统错误（做系统人的问题）
+
+-- 题目提交表
+create table if not exists question_submit
+(
+    id         bigint auto_increment comment 'id' primary key,
+    language   varchar(128)                       not null comment '编程语言',
+    code       text                               not null comment '用户代码',
+    judgeInfo  text                               null comment '判题信息（json 对象）',
+    status     int      default 0                 not null comment '判题状态（0 - 待判题、1 - 判题中、2 - 成功、3 - 失败）',
+    questionId bigint                             not null comment '题目 id',
+    userId     bigint                             not null comment '创建用户 id',
+    createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete   tinyint  default 0                 not null comment '是否删除',
+    index idx_questionId (questionId),
+    index idx_userId (userId)
+) comment '题目提交';
