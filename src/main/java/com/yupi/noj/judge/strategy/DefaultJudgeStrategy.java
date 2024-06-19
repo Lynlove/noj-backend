@@ -4,7 +4,7 @@ import com.yupi.noj.model.entity.Question;
 import cn.hutool.json.JSONUtil;
 import com.yupi.noj.model.dto.question.JudgeCase;
 import com.yupi.noj.model.dto.question.JudgeConfig;
-import com.yupi.noj.model.dto.questionsubmit.JudgeInfo;
+import com.yupi.noj.judge.codesandbox.model.JudgeInfo;
 import com.yupi.noj.model.enums.JudgeInfoMessageEnum;
 
 import java.util.List;

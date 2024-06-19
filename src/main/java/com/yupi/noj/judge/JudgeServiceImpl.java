@@ -12,11 +12,9 @@ import com.yupi.noj.judge.codesandbox.CodeSandboxFactory;
 import com.yupi.noj.judge.codesandbox.CodeSandboxProxy;
 import com.yupi.noj.judge.codesandbox.model.ExecuteCodeRequest;
 import com.yupi.noj.judge.codesandbox.model.ExecuteCodeResponse;
-import com.yupi.noj.judge.strategy.DefaultJudgeStrategy;
 import com.yupi.noj.judge.strategy.JudgeContext;
-import com.yupi.noj.judge.strategy.JudgeStrategy;
 import com.yupi.noj.model.dto.question.JudgeCase;
-import com.yupi.noj.model.dto.questionsubmit.JudgeInfo;
+import com.yupi.noj.judge.codesandbox.model.JudgeInfo;
 import com.yupi.noj.model.entity.Question;
 import com.yupi.noj.model.entity.QuestionSubmit;
 import com.yupi.noj.model.enums.QuestionSubmitStatusEnum;
@@ -27,6 +25,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+/**
+ * 判题服务（单机）
+ */
 @Service
 public class JudgeServiceImpl implements JudgeService {
 
@@ -40,6 +41,7 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Resource
     private JudgeManager judgeManager;
+
 
     @Override
     public QuestionSubmit doJudge(long questionSubmitId) {

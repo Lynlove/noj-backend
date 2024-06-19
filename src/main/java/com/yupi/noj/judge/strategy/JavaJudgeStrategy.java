@@ -3,11 +3,12 @@ package com.yupi.noj.judge.strategy;
 import cn.hutool.json.JSONUtil;
 import com.yupi.noj.model.dto.question.JudgeCase;
 import com.yupi.noj.model.dto.question.JudgeConfig;
-import com.yupi.noj.model.dto.questionsubmit.JudgeInfo;
+import com.yupi.noj.judge.codesandbox.model.JudgeInfo;
 import com.yupi.noj.model.entity.Question;
 import com.yupi.noj.model.enums.JudgeInfoMessageEnum;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Java判题策略
@@ -18,8 +19,8 @@ public class JavaJudgeStrategy implements JudgeStrategy {
 
 
         JudgeInfo judgeInfo = context.getJudgeInfo();
-        Long memory = judgeInfo.getMemory();
-        Long time = judgeInfo.getTime();
+        Long memory = Optional.ofNullable(judgeInfo.getMemory()).orElse(0L);
+        Long time = Optional.ofNullable(judgeInfo.getTime()).orElse(0L);
 
         List<String> inputList = context.getInputList();
         List<String> outputList = context.getOutputList();
@@ -68,7 +69,6 @@ public class JavaJudgeStrategy implements JudgeStrategy {
             judgeInfoResponse.setMessage(judgeInfoMessageEnum.getValue());
             return judgeInfoResponse;
         }
-
         return judgeInfoResponse;
     }
 }
