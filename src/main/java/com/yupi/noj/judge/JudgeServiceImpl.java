@@ -2,6 +2,7 @@ package com.yupi.noj.judge;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import cn.hutool.json.JSONUtil;
@@ -17,6 +18,7 @@ import com.yupi.noj.model.dto.question.JudgeCase;
 import com.yupi.noj.judge.codesandbox.model.JudgeInfo;
 import com.yupi.noj.model.entity.Question;
 import com.yupi.noj.model.entity.QuestionSubmit;
+import com.yupi.noj.model.enums.JudgeInfoMessageEnum;
 import com.yupi.noj.model.enums.QuestionSubmitStatusEnum;
 import com.yupi.noj.service.QuestionService;
 import com.yupi.noj.service.QuestionSubmitService;
@@ -66,11 +68,19 @@ public class JudgeServiceImpl implements JudgeService {
         // 3）更改判题状态
         QuestionSubmit questionSubmitUpdate = new QuestionSubmit();
         questionSubmitUpdate.setId(questionSubmitId);
+
         questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.RUNNING.getValue());
         boolean update = questionSubmitService.updateById(questionSubmitUpdate);
         if (!update) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "判题状态更新失败");
         }
+
+        // 添加题目提交数
+        Question updateQuestion = new Question();
+        updateQuestion.setId(questionId);
+        Integer submitNum = Optional.ofNullable(question.getSubmitNum()).orElse(0);
+        question.setSubmitNum(submitNum + 1);
+        questionService.updateById(question);
 
         // 4）调用沙箱，执行代码，获取执行结果
         CodeSandbox codeSandBox = CodeSandboxFactory.newInstance(type);
@@ -106,6 +116,16 @@ public class JudgeServiceImpl implements JudgeService {
         if (!update) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "判题状态更新失败");
         }
+
+        // 如果答案正确，更新题目通过数
+        if (JudgeInfoMessageEnum.ACCEPTED.getValue().equals(judgeInfo.getMessage())) {
+            Integer acceptedNum = Optional.ofNullable(question.getAcceptedNum()).orElse(0);
+            updateQuestion = new Question();
+            updateQuestion.setId(questionId);
+            question.setAcceptedNum(acceptedNum + 1);
+            questionService.updateById(question);
+        }
+
         QuestionSubmit questionSubmitResult = questionSubmitService.getById(questionSubmitId);
         return questionSubmitResult;
     }
