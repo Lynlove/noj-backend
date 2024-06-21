@@ -1,6 +1,4 @@
-# noj在线判题系统微服务版本
-
-改造前的springboot版：https://github.com/Lynlove/noj-backend
+# noj在线判题系统
 
 ## 系统架构图
 ![img.png](img.png)
