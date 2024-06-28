@@ -165,6 +165,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return currentUser;
     }
 
+//    @Override
+//    public User getLoginUser() {
+//        // 先判断是否已登录
+//        Object userObj = StpUtil.getSession().get(USER_LOGIN_STATE);
+//        User currentUser = (User) userObj;
+//        if (currentUser == null || currentUser.getId() == null) {
+//            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+//        }
+//        return currentUser;
+//    }
+
     /**
      * 获取当前登录用户（允许未登录）
      *
