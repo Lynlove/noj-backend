@@ -1,5 +1,6 @@
 package com.yupi.noj.service.impl;
 
+import static com.yupi.noj.constant.UserConstant.DEFAULT_AVATAR;
 import static com.yupi.noj.constant.UserConstant.USER_LOGIN_STATE;
 
 import cn.hutool.core.collection.CollUtil;
@@ -73,6 +74,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setUserAccount(userAccount);
             user.setUserPassword(encryptPassword);
             user.setUserName(userName);
+
+            user.setUserAvatar(DEFAULT_AVATAR);
             boolean saveResult = this.save(user);
             if (!saveResult) {
                 throw new BusinessException(ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
