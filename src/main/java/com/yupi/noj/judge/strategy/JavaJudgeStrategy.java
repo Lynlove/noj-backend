@@ -19,6 +19,14 @@ public class JavaJudgeStrategy implements JudgeStrategy {
 
 
         JudgeInfo judgeInfo = context.getJudgeInfo();
+
+        // 代码沙箱编译错误
+        if (judgeInfo == null || judgeInfo.getMessage() == null){
+            JudgeInfo judgeInfoResponse = new JudgeInfo();
+            judgeInfoResponse.setMessage("编译错误");
+            return judgeInfoResponse;
+        }
+
         Long memory = Optional.ofNullable(judgeInfo.getMemory()).orElse(0L);
         Long time = Optional.ofNullable(judgeInfo.getTime()).orElse(0L);
 

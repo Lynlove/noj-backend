@@ -22,6 +22,7 @@ import com.yupi.noj.model.enums.JudgeInfoMessageEnum;
 import com.yupi.noj.model.enums.QuestionSubmitStatusEnum;
 import com.yupi.noj.service.QuestionService;
 import com.yupi.noj.service.QuestionSubmitService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ import javax.annotation.Resource;
  * 判题服务（单机）
  */
 @Service
+@Slf4j
 public class JudgeServiceImpl implements JudgeService {
 
     @Value("${codesandbox.type:example}")
@@ -99,18 +101,22 @@ public class JudgeServiceImpl implements JudgeService {
         ExecuteCodeResponse executeCodeResponse = codeSandBox.executeCode(executeCodeRequest);
         // 5）根据执行结果，设置题目的判题状态和信息
         JudgeContext judgeContext = new JudgeContext();
-        judgeContext.setJudgeInfo(executeCodeResponse.getJudgeInfo());
+
+
         judgeContext.setInputList(inputList);
         judgeContext.setOutputList(executeCodeResponse.getOutputList());
+        judgeContext.setJudgeInfo(executeCodeResponse.getJudgeInfo());
         judgeContext.setJudgeCaseList(judgeCaseList);
         judgeContext.setQuestion(question);
         judgeContext.setQuestionSubmit(questionSubmit);
 
         JudgeInfo judgeInfo = judgeManager.doJudge(judgeContext);
+
         // 更新判题状态
         questionSubmitUpdate = new QuestionSubmit();
         questionSubmitUpdate.setId(questionSubmitId);
         questionSubmitUpdate.setStatus(QuestionSubmitStatusEnum.SUCCESS.getValue());
+
         questionSubmitUpdate.setJudgeInfo(JSONUtil.toJsonStr(judgeInfo));
         update = questionSubmitService.updateById(questionSubmitUpdate);
         if (!update) {

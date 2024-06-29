@@ -3,11 +3,13 @@ package com.yupi.noj.model.vo;
 import cn.hutool.json.JSONUtil;
 import com.yupi.noj.judge.codesandbox.model.JudgeInfo;
 import com.yupi.noj.model.entity.QuestionSubmit;
+import com.yupi.noj.model.enums.QuestionSubmitStatusEnum;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 题目提交封装类
@@ -37,7 +39,7 @@ public class QuestionSubmitVO implements Serializable {
     /**
      * 判题状态（0 - 待判题、1 - 判题中、2 - 成功、3 - 失败）
      */
-    private Integer status;
+    private String status;
 
     /**
      * 题目 id
@@ -87,6 +89,16 @@ public class QuestionSubmitVO implements Serializable {
         if (voJudgeInfo != null) {
             questionSubmit.setJudgeInfo(JSONUtil.toJsonStr(voJudgeInfo));
         }
+
+        // 判题状态
+        String strStatus = questionSubmitVO.getStatus();
+        List<Integer> values = QuestionSubmitStatusEnum.getValues();
+        for (Integer value : values) {
+            if (QuestionSubmitStatusEnum.getEnumByValue(value).getText().equals(strStatus)){
+                questionSubmit.setStatus(value);
+                break;
+            }
+        }
         return questionSubmit;
     }
 
@@ -104,6 +116,11 @@ public class QuestionSubmitVO implements Serializable {
         BeanUtils.copyProperties(questionSubmit, questionSubmitVO);
         JudgeInfo judgeInfo = JSONUtil.toBean(questionSubmit.getJudgeInfo(), JudgeInfo.class);
         questionSubmitVO.setJudgeInfo(judgeInfo);
+
+        // 判题状态
+        QuestionSubmitStatusEnum enumByValue = QuestionSubmitStatusEnum.getEnumByValue(questionSubmit.getStatus());
+        questionSubmitVO.setStatus(enumByValue.getText());
+
         return questionSubmitVO;
     }
 }
