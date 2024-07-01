@@ -50,6 +50,11 @@ server:
     session:
       cookie:
         max-age: 2592000
+  ssl:
+    enabled: true
+    key-store: classpath:affectionate.icu.jks
+    key-store-password: 010826Lyn.
+    key-store-type: jks
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
